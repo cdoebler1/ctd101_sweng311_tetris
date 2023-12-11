@@ -89,13 +89,13 @@ public abstract class Tetromino extends ShapeGroup
     }
 
     public List<Rectangle> getRectangles() {
-        List<Rectangle> clonedRectangles = new ArrayList<>();
+        /*List<Rectangle> clonedRectangles = new ArrayList<>();
 
         for (Rectangle rect : rectangles)
         {
             clonedRectangles.add(new Rectangle(rect.getXLocation(), rect.getYLocation()));
-        }
+        }*/
 
-        return clonedRectangles;
+        return rectangles;
     }
 }

@@ -44,10 +44,10 @@ public class TetrisController
 
         Random random = new Random();
         int selectTetromino = random.nextInt(5);
-        // selectTetromino = 4;
+
         switch (selectTetromino)
         {
-            case 0: 
+            case 0:
                 tetromino = new StraightLine(Color.cyan);
                 break;
             case 1:
@@ -82,23 +82,25 @@ public class TetrisController
     }
 
     public boolean collisionDetected(Tetromino tetromino) {
+
         for (Rectangle rect : tetromino.getRectangles())
         {
-            int x = (tetromino.getXLocation() + rect.getXLocation()) / Tetromino.SIZE;
-            int y = (tetromino.getYLocation() + rect.getYLocation()) / Tetromino.SIZE;
+
+            int x = (rect.getXLocation() / Tetromino.SIZE);
+            int y = (rect.getYLocation() / Tetromino.SIZE);
             System.out.println("X: " + x + ", Y: " + y);
 
-            if (x >= 0 && x < TetrisBoard.WIDTH && y >= 0 && y < TetrisBoard.HEIGHT)
+            /* if (x < 0 || x >= TetrisBoard.WIDTH || y < 0 || y >= TetrisBoard.HEIGHT)
             {
-                // Check if the Tetromino collides with other landed Tetrominos
-                if (this.TETRIS_BOARD.getPlayingField()[x][y].getColor() != Color.WHITE)
-                {
-                    System.out.println("True");
-                    return true;
-                }
+                return true;
             }
-        }
 
+            // Check if the Tetromino collides with other landed Tetrominos
+            if (TETRIS_BOARD.getPlayingField()[x][y].getColor() != Color.WHITE)
+                {
+                    return true;
+                }*/
+        }
         return false;
     }
 

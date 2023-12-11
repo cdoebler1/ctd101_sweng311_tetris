@@ -84,8 +84,9 @@ public class TetrisController
     public boolean collisionDetected(Tetromino tetromino) {
         for (Rectangle rect : tetromino.getRectangles())
         {
-            int x = (tetromino.getXLocation() + rect.getXLocation() - 40) / Tetromino.SIZE;
+            int x = (tetromino.getXLocation() + rect.getXLocation()) / Tetromino.SIZE;
             int y = (tetromino.getYLocation() + rect.getYLocation()) / Tetromino.SIZE;
+            System.out.println("X: " + x + ", Y: " + y);
 
             if (x >= 0 && x < TetrisBoard.WIDTH && y >= 0 && y < TetrisBoard.HEIGHT)
             {
@@ -97,6 +98,7 @@ public class TetrisController
                 }
             }
         }
+
         return false;
     }
 

@@ -26,7 +26,7 @@ public abstract class Tetromino extends ShapeGroup
     protected Rectangle r2;
     protected Rectangle r3;
     protected Rectangle r4;
-    private List<Rectangle> rectangles;
+    private final List<Rectangle> rectangles;
 
     protected Color tetrominoColor;
 
@@ -89,12 +89,6 @@ public abstract class Tetromino extends ShapeGroup
     }
 
     public List<Rectangle> getRectangles() {
-        /*List<Rectangle> clonedRectangles = new ArrayList<>();
-
-        for (Rectangle rect : rectangles)
-        {
-            clonedRectangles.add(new Rectangle(rect.getXLocation(), rect.getYLocation()));
-        }*/
 
         return rectangles;
     }

@@ -90,12 +90,12 @@ public class TetrisController
             int y = (rect.getYLocation() / Tetromino.SIZE);
             System.out.println("X: " + x + ", Y: " + y);
 
-            /* if (x < 0 || x >= TetrisBoard.WIDTH || y < 0 || y >= TetrisBoard.HEIGHT)
+            if (y >= TetrisBoard.HEIGHT)
             {
                 return true;
             }
 
-            // Check if the Tetromino collides with other landed Tetrominos
+            /*// Check if the Tetromino collides with other landed Tetrominos
             if (TETRIS_BOARD.getPlayingField()[x][y].getColor() != Color.WHITE)
                 {
                     return true;

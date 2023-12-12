@@ -19,8 +19,7 @@ import wheelsunh.users.Rectangle;
  * @author Charles Doebler
  * @version 1.0 December 15, 2023
  */
-public class TetrisController
-{
+public class TetrisController {
     private final TetrisBoard TETRIS_BOARD;
 
     /**
@@ -28,8 +27,7 @@ public class TetrisController
      *
      * @param tetrisBoard A tetris board instance
      */
-    public TetrisController( TetrisBoard tetrisBoard )
-    {
+    public TetrisController(TetrisBoard tetrisBoard) {
         this.TETRIS_BOARD = tetrisBoard;
     }
 
@@ -38,15 +36,13 @@ public class TetrisController
      *
      * @return The next tetronimo to be played
      */
-    public Tetromino getNextTetronimo()
-    {
+    public Tetromino getNextTetronimo() {
         Tetromino tetromino;
 
         Random random = new Random();
         int selectTetromino = random.nextInt(5);
 
-        switch (selectTetromino)
-        {
+        switch (selectTetromino) {
             case 0:
                 tetromino = new StraightLine(Color.cyan);
                 break;
@@ -63,8 +59,8 @@ public class TetrisController
                 tetromino = new TTet(Color.magenta);
                 break;
         }
-        
-        tetromino.setLocation( 40 + (5 * Tetromino.SIZE), 0 );
+
+        tetromino.setLocation(40 + (5 * Tetromino.SIZE), 0);
 
         return tetromino;
     }
@@ -73,38 +69,25 @@ public class TetrisController
      * Method to determine if the tetronimo has landed or collided
      *
      * @param tetromino The tetronimo to evaluate
-     * @return True if the tetronimo has landed (on the bottom of the board or another tetronimo), false if it has not
+     * @return True if the tetronimo has landed on the bottom of the board or another tetronimo.
      */
 
     public boolean collisionDetected(Tetromino tetromino) {
 
-        for (Rectangle rect : tetromino.getRectangles())
-        {
+        for (Rectangle rect : tetromino.getRectangles()) {
 
             int x = ((rect.getXLocation() - 40) / Tetromino.SIZE);
             int y = (rect.getYLocation() / Tetromino.SIZE);
 
-            if (y >= TetrisBoard.HEIGHT-1)
-            {
-                System.out.println("bottom");
+            if (y >= TetrisBoard.HEIGHT - 1) {
                 return true;
             }
 
             // Check if the Tetromino collides with other landed Tetrominos
-            if (TETRIS_BOARD.getClonedBoard()[x][y+1] == 1)
-                {
-                    return true;
-                }
+            if (TETRIS_BOARD.getClonedBoard()[x][y + 1] == 1) {
+                return true;
+            }
         }
         return false;
-    }
-
-    public boolean gameOver()
-    {
-        return false;
-    }
-    public void handleGameOver()
-    {
-
     }
 }

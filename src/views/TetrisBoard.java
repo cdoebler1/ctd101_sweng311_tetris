@@ -45,6 +45,9 @@ public class TetrisBoard implements KeyListener
     private int[][] clonedBoard;
     private Tetromino nextTetromino;
 
+    private int score = 0;
+    private TextBox scoreboard;
+
     /**
      * Constructor to initialize the board
      *
@@ -66,6 +69,8 @@ public class TetrisBoard implements KeyListener
     private void buildBoard() {
         this.playingField = new Rectangle[WIDTH][HEIGHT];
         this.previewField = new Rectangle[previewSize][previewSize];
+        this.scoreboard = new TextBox("Score: " + score);
+        scoreboard.setLocation(300, 100);
 
         for (int i = 0; i < TetrisBoard.WIDTH; i++)
         {
@@ -84,9 +89,7 @@ public class TetrisBoard implements KeyListener
             for (int j = 0; j < previewSize; j++)
             {
                 this.previewField[i][j] = new Rectangle();
-                // set the size, location, and color of each preview block
-                // you may want to use different coordinates for setLocation to position the preview where you want
-                this.previewField[i][j].setLocation(i * 20 + 40, j * 20);
+                this.previewField[i][j].setLocation(i * 20 + 300, j * 20);
                 this.previewField[i][j].setSize(Tetromino.SIZE, Tetromino.SIZE);
                 this.previewField[i][j].setColor(Color.WHITE);
                 this.previewField[i][j].setFrameColor(Color.BLACK);
@@ -99,15 +102,23 @@ public class TetrisBoard implements KeyListener
     public void run() {
         // Create first (next) tetromino
         this.nextTetromino = this.CONTROLLER.getNextTetronimo();
-        while (!this.CONTROLLER.gameOver())
+        this.nextTetromino.setLocation(this.nextTetromino.getXLocation() + 180, this.nextTetromino.getYLocation());
+
+        while (true)
         {
             // nextTetromino becomes active tetromino
             this.tetromino = this.nextTetromino;
-            this.tetromino.setLocation(this.tetromino.getXLocation(), this.tetromino.getYLocation());
+            this.tetromino.setLocation(this.tetromino.getXLocation() - 200, this.tetromino.getYLocation());
             Utilities.sleep(500);
+
+            if (this.CONTROLLER.collisionDetected(this.tetromino))
+            {
+                gameOver();
+            }
 
             // Create next tetromino
             this.nextTetromino = this.CONTROLLER.getNextTetronimo();
+            this.nextTetromino.setLocation(this.nextTetromino.getXLocation() + 180, this.nextTetromino.getYLocation());
 
             // Update preview
             this.updatePreview(this.nextTetromino);
@@ -119,13 +130,15 @@ public class TetrisBoard implements KeyListener
                 Utilities.sleep(500);
             }
 
+            score += 100;
+            this.scoreboard.setText("Score: " + score);
+
             // Update array board using for tracking and scoring
             updateClonedBoard();
 
             // Destroy active tetromino
             this.tetromino = null;
         }
-        this.CONTROLLER.handleGameOver();
     }
 
     public void updateClonedBoard()
@@ -146,6 +159,7 @@ public class TetrisBoard implements KeyListener
         for (int i = 0; i < previewField.length; i++) {
             for (int j = 0; j < previewField[i].length; j++) {
                 previewField[i][j].setColor(Color.WHITE);
+                previewField[i][j].setFrameColor(Color.BLACK);
             }
         }
 
@@ -168,6 +182,13 @@ public class TetrisBoard implements KeyListener
     public int[][] getClonedBoard()
     {
         return clonedBoard;
+    }
+
+    public void gameOver()
+    {
+        TextBox TextBox = new TextBox("Game Over");
+        TextBox.setLocation(200, 200);
+        System.exit(0);
     }
 
     /**

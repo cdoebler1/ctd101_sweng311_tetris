@@ -17,9 +17,9 @@ import java.awt.event.KeyListener;
  * @author Charles Doebler
  * @version 1.0 December 15, 2023
  *
- * @see java.awt.Color
- * @see java.awt.event.KeyListener
- * @see java.awt.event.KeyEvent
+ * @see Color
+ * @see KeyListener
+ * @see KeyEvent
  */
 public class TetrisBoard implements KeyListener
 {
@@ -33,9 +33,17 @@ public class TetrisBoard implements KeyListener
      */
     public static final int HEIGHT = 24;
 
+    /**
+     * Constant for the preview board size
+     */
+    public static final int previewSize = 4;
+
     private final TetrisController CONTROLLER;
     private Tetromino tetromino;
     private Rectangle[][] playingField;
+    private Rectangle[][] previewField;
+    private int[][] clonedBoard;
+    private Tetromino nextTetromino;
 
     /**
      * Constructor to initialize the board
@@ -55,57 +63,100 @@ public class TetrisBoard implements KeyListener
     /**
      * Builds the playing field for tetris
      */
-    private void buildBoard()
-    {
-        this.playingField = new Rectangle[ WIDTH ][ HEIGHT ];
+    private void buildBoard() {
+        this.playingField = new Rectangle[WIDTH][HEIGHT];
+        this.previewField = new Rectangle[previewSize][previewSize];
 
-        for ( int i = 0; i < TetrisBoard.WIDTH; i++ )
+        for (int i = 0; i < TetrisBoard.WIDTH; i++)
         {
-            for ( int j = 0; j < TetrisBoard.HEIGHT; j++ )
+            for (int j = 0; j < TetrisBoard.HEIGHT; j++)
             {
-                this.playingField[ i ][ j ] = new Rectangle();
-                this.playingField[ i ][ j ].setLocation( i * 20 + 40, j * 20 );
-                this.playingField[ i ][ j ].setSize( Tetromino.SIZE, Tetromino.SIZE );
-                this.playingField[ i ][ j ].setColor( Color.WHITE );
-                this.playingField[ i ][ j ].setFrameColor( Color.BLACK );
+                this.playingField[i][j] = new Rectangle();
+                this.playingField[i][j].setLocation(i * 20 + 40, j * 20);
+                this.playingField[i][j].setSize(Tetromino.SIZE, Tetromino.SIZE);
+                this.playingField[i][j].setColor(Color.WHITE);
+                this.playingField[i][j].setFrameColor(Color.BLACK);
+                this.clonedBoard = new int[WIDTH][HEIGHT];
+            }
+        }
+        for (int i = 0; i < previewSize; i++)
+        {
+            for (int j = 0; j < previewSize; j++)
+            {
+                this.previewField[i][j] = new Rectangle();
+                // set the size, location, and color of each preview block
+                // you may want to use different coordinates for setLocation to position the preview where you want
+                this.previewField[i][j].setLocation(i * 20 + 40, j * 20);
+                this.previewField[i][j].setSize(Tetromino.SIZE, Tetromino.SIZE);
+                this.previewField[i][j].setColor(Color.WHITE);
+                this.previewField[i][j].setFrameColor(Color.BLACK);
             }
         }
     }
-
     /**
-     * Starts gameplay and is responsible for keeping the game going (INCOMPLETE)
+     * Starts gameplay and is responsible for keeping the game going
      */
     public void run() {
-        boolean gameover = false;
-        while (!gameover)
+        // Create first (next) tetromino
+        this.nextTetromino = this.CONTROLLER.getNextTetronimo();
+        while (!this.CONTROLLER.gameOver())
         {
-            this.tetromino = this.CONTROLLER.getNextTetronimo();
+            // nextTetromino becomes active tetromino
+            this.tetromino = this.nextTetromino;
             this.tetromino.setLocation(this.tetromino.getXLocation(), this.tetromino.getYLocation());
             Utilities.sleep(500);
 
-            while ((!this.CONTROLLER.tetrominoLanded(this.tetromino))&&(!this.CONTROLLER.collisionDetected(this.tetromino)))
+            // Create next tetromino
+            this.nextTetromino = this.CONTROLLER.getNextTetronimo();
+
+            // Update preview
+            this.updatePreview(this.nextTetromino);
+
+            // Check for collision. If no collision, drop tetromino one row.
+            while (!this.CONTROLLER.collisionDetected(this.tetromino))
             {
                 this.tetromino.setLocation(this.tetromino.getXLocation(), this.tetromino.getYLocation() + Tetromino.SIZE);
                 Utilities.sleep(500);
             }
-            //updatePlayingField(this.tetromino);
 
-            gameover = this.CONTROLLER.gameOver();
+            // Update array board using for tracking and scoring
+            updateClonedBoard();
 
+            // Destroy active tetromino
             this.tetromino = null;
         }
         this.CONTROLLER.handleGameOver();
     }
 
-    public void updatePlayingField( Tetromino tetromino)
+    public void updateClonedBoard()
     {
-        System.out.println("Updating PlayingField");
         for (Rectangle rect : this.tetromino.getRectangles()) {
-            int x = (this.tetromino.getXLocation() + rect.getXLocation() - 40) / Tetromino.SIZE;
-            int y = (this.tetromino.getYLocation() + rect.getYLocation()) / Tetromino.SIZE;
+            int x = (rect.getXLocation() - 40) / Tetromino.SIZE;
+            int y = (rect.getYLocation()) / Tetromino.SIZE;
 
             // Update the color of the corresponding block in the playing field
-            playingField[x][y].setColor(Color.black);
+            System.out.println("Update: " + x + ", " + y);
+            clonedBoard[x][y] = 1;
+        }
+    }
+
+    public void updatePreview(Tetromino nextTetromino)
+    {
+        // Clear the old preview
+        for (int i = 0; i < previewField.length; i++) {
+            for (int j = 0; j < previewField[i].length; j++) {
+                previewField[i][j].setColor(Color.WHITE);
+            }
+        }
+
+        // Draw the new preview
+        for (Rectangle rect : nextTetromino.getRectangles()) {
+            int x = (rect.getXLocation() - 40) / Tetromino.SIZE;
+            int y = (rect.getYLocation()) / Tetromino.SIZE;
+
+            if (x >= 0 && x < previewField.length && y >= 0 && y < previewField[0].length) {
+                previewField[x][y].setColor(nextTetromino.getColor());
+            }
         }
     }
 
@@ -114,9 +165,9 @@ public class TetrisBoard implements KeyListener
      *
      * @return The playing field
      */
-    public Rectangle[][] getPlayingField()
+    public int[][] getClonedBoard()
     {
-        return playingField;
+        return clonedBoard;
     }
 
     /**

@@ -70,36 +70,31 @@ public class TetrisController
     }
 
     /**
-     * Method to determine if the tetronimo has landed (INCOMPLETE)
+     * Method to determine if the tetronimo has landed or collided
      *
-     * @param tetronimo The tetronimo to evaluate
+     * @param tetromino The tetronimo to evaluate
      * @return True if the tetronimo has landed (on the bottom of the board or another tetronimo), false if it has not
      */
-    public boolean tetrominoLanded(Tetromino tetronimo )
-    {
-        int nextY = tetronimo.getYLocation() + tetronimo.getHeight() + Tetromino.SIZE;
-        return nextY > 480;
-    }
 
     public boolean collisionDetected(Tetromino tetromino) {
 
         for (Rectangle rect : tetromino.getRectangles())
         {
 
-            int x = (rect.getXLocation() / Tetromino.SIZE);
+            int x = ((rect.getXLocation() - 40) / Tetromino.SIZE);
             int y = (rect.getYLocation() / Tetromino.SIZE);
-            System.out.println("X: " + x + ", Y: " + y);
 
-            if (y >= TetrisBoard.HEIGHT)
+            if (y >= TetrisBoard.HEIGHT-1)
             {
+                System.out.println("bottom");
                 return true;
             }
 
-            /*// Check if the Tetromino collides with other landed Tetrominos
-            if (TETRIS_BOARD.getPlayingField()[x][y].getColor() != Color.WHITE)
+            // Check if the Tetromino collides with other landed Tetrominos
+            if (TETRIS_BOARD.getClonedBoard()[x][y+1] == 1)
                 {
                     return true;
-                }*/
+                }
         }
         return false;
     }

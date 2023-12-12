@@ -92,4 +92,9 @@ public abstract class Tetromino extends ShapeGroup
 
         return rectangles;
     }
+
+    public Color getColor()
+    {
+        return tetrominoColor;
+    }
 }

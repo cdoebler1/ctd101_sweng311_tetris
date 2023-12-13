@@ -127,17 +127,17 @@ public class TetrisBoard implements KeyListener
             while (!this.CONTROLLER.collisionDetected(this.tetromino))
             {
                 this.tetromino.setLocation(this.tetromino.getXLocation(), this.tetromino.getYLocation() + Tetromino.SIZE);
-                Utilities.sleep(500);
+                Utilities.sleep(100);
             }
-
-            score += 100;
-            this.scoreboard.setText("Score: " + score);
 
             // Update array board using for tracking and scoring
             updateClonedBoard();
 
             // Destroy active tetromino
             this.tetromino = null;
+
+            // Check for full rows
+            clearRows();
         }
     }
 
@@ -148,8 +148,9 @@ public class TetrisBoard implements KeyListener
             int y = (rect.getYLocation()) / Tetromino.SIZE;
 
             // Update the color of the corresponding block in the playing field
-            System.out.println("Update: " + x + ", " + y);
             clonedBoard[x][y] = 1;
+            this.playingField[x][y].setColor(this.tetromino.getColor());
+            this.playingField[x][y].setFrameColor(Color.BLACK);
         }
     }
 
@@ -175,7 +176,7 @@ public class TetrisBoard implements KeyListener
     }
 
     /**
-     * Getter method for the array representing the playing field, not used yet but will be needed by the controller later
+     * Getter method for the array representing the playing field
      *
      * @return The playing field
      */
@@ -188,7 +189,49 @@ public class TetrisBoard implements KeyListener
     {
         TextBox TextBox = new TextBox("Game Over");
         TextBox.setLocation(200, 200);
-        System.exit(0);
+        //System.exit(0);
+    }
+
+    /**
+     * This method will loop over each row in the board (clonedBoard). If a row is filled (all elements are 1),
+     * that row is removed, and a new row is added at the top of the board.
+     */
+    private void clearRows()
+    {
+        for (int i = 0; i < HEIGHT; i++)
+        {
+            boolean rowFilled = true;
+            for (int j = 0; j < WIDTH; j++)
+            {
+                if (clonedBoard[j][i] == 0)
+                {
+                    rowFilled = false;
+                    break;
+                }
+            }
+            if (rowFilled)
+            {
+                // Shift every row above down by one.
+                for (int k = i; k > 0; k--)
+                {
+                    for (int l = 0; l < WIDTH; l++)
+                    {
+                        clonedBoard[l][k] = clonedBoard[l][k - 1];
+                        System.out.println(this.playingField[l][k - 1].getColor());
+                        this.playingField[l][k].setColor(this.playingField[l][k - 1].getColor());
+                    }
+                }
+                // Clear the topmost row
+                for (int l = 0; l < WIDTH; l++)
+                {
+                    clonedBoard[l][0] = 0;
+                    this.playingField[l][0].setColor(Color.WHITE);
+                    this.playingField[l][0].setFrameColor(Color.BLACK);
+                }
+                score += 100;
+                scoreboard.setText("Score: " + score);
+            }
+        }
     }
 
     /**

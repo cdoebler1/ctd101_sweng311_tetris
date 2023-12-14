@@ -126,14 +126,17 @@ public class TetrisBoard implements KeyListener
             while (!this.CONTROLLER.collisionDetected(this.tetromino))
             {
                 this.tetromino.setLocation(this.tetromino.getXLocation(), this.tetromino.getYLocation() + Tetromino.SIZE);
-                Utilities.sleep(100);
+                Utilities.sleep(500);
             }
 
-            // Update array board using for tracking and scoring
+            // Update array board used for tracking and scoring
             boards();
 
             // Destroy active tetromino
-            this.tetromino = null;
+            for (Rectangle rect: this.tetromino.getRectangles())
+            {
+                rect.hide();
+            }
 
             // Check for full rows
             clearRows();
@@ -199,36 +202,37 @@ public class TetrisBoard implements KeyListener
      */
     private void clearRows()
     {
-        outerloop:
         for (int i = HEIGHT - 1; i > 0; i--)
         {
+            boolean rowFilled = false;
             for (int j = 0; j < WIDTH; j++)
             {
+                rowFilled = true;
                 if (clonedBoard[j][i] == 0)
                 {
-                    continue outerloop;
+                    rowFilled = false;
+                    break;
                 }
             }
-
-            // Shift every row above down by one.
-            for (int k = i; k > 0; k--)
-            {
-                for (int l = 0; l < WIDTH; l++)
+            if (rowFilled) {
+                // Shift every row above down by one.
+                for (int k = i; k > 0; k--)
                 {
-                    clonedBoard[l][k] = clonedBoard[l][k - 1];
-                    this.playingField[l][k].setFillColor(this.playingField[l][k - 1].getFillColor());
+                    for (int l = 0; l < WIDTH; l++) {
+                        clonedBoard[l][k] = clonedBoard[l][k - 1];
+                        Color temp = this.playingField[l][k - 1].getFillColor();
+                        this.playingField[l][k].setFillColor(temp);
+                    }
                 }
+                // Clear the topmost row
+                for (int l = 0; l < WIDTH; l++) {
+                    clonedBoard[l][0] = 0;
+                    this.playingField[l][0].setFillColor(Color.WHITE);
+                }
+                score += 100;
+                scoreboard.setText("Score: " + score);
+                i++; // Rerun the same row after shifting all rows above
             }
-
-            // Clear the topmost row
-            for (int l = 0; l < WIDTH; l++)
-            {
-                clonedBoard[l][0] = 0;
-                this.playingField[l][0].setColor(Color.WHITE);
-            }
-            score += 100;
-            scoreboard.setText("Score: " + score);
-            i++; // Perform revisiting the same row after shifting all rows above
         }
     }
 
@@ -281,12 +285,12 @@ public class TetrisBoard implements KeyListener
                     this.tetromino.shiftRight();
                 }
                 break;
-            /*case 40:
+            case 40:
                 if(!this.CONTROLLER.collisionDetected(this.tetromino))
                 {
                     this.tetromino.shiftDown();
                 }
-                break;*/
+                break;
         }
 
     }

@@ -42,7 +42,6 @@ public class TetrisBoard implements KeyListener
     private Tetromino tetromino;
     private Rectangle[][] playingField;
     private Rectangle[][] previewField;
-    private int[][] clonedBoard;
     private int score = 0;
     private TextBox scoreboard;
 
@@ -69,7 +68,6 @@ public class TetrisBoard implements KeyListener
         this.previewField = new Rectangle[previewSize][previewSize];
         this.scoreboard = new TextBox("Score: " + score);
         scoreboard.setLocation(300, 100);
-        this.clonedBoard = new int[WIDTH][HEIGHT];
 
         for (int i = 0; i < TetrisBoard.WIDTH; i++)
         {
@@ -151,7 +149,6 @@ public class TetrisBoard implements KeyListener
             int y = (rect.getYLocation()) / Tetromino.SIZE;
 
             // Update the color of the corresponding block in the playing field
-            clonedBoard[x][y] = 1;
             this.playingField[x][y].setFillColor(this.tetromino.getColor());
             this.playingField[x][y].setFrameColor(Color.BLACK);
         }
@@ -184,20 +181,19 @@ public class TetrisBoard implements KeyListener
      *
      * @return The playing field
      */
-    public int[][] getClonedBoard()
+     public Rectangle[][] getPlayingField()
     {
-        return clonedBoard;
+        return playingField;
     }
 
     public void gameOver()
     {
         TextBox TextBox = new TextBox("Game Over");
         TextBox.setLocation(300, 200);
-        //System.exit(0);
     }
 
     /**
-     * This method will loop over each row in the board (clonedBoard). If a row is filled (all elements are 1),
+     * This method will loop over each row in the board. If a row is filled (all elements are not white),
      * that row is removed, and a new row is added at the top of the board.
      */
     private void clearRows()
@@ -209,7 +205,7 @@ public class TetrisBoard implements KeyListener
             for (int j = 0; j < WIDTH; j++)
             {
                 rowFilled = true;
-                if (clonedBoard[j][i] == 0)
+                if (this.playingField[j][i].getFillColor() == Color.WHITE)
                 {
                     rowFilled = false;
                     break;
@@ -222,7 +218,7 @@ public class TetrisBoard implements KeyListener
                 {
                     for (int l = 0; l < WIDTH; l++)
                     {
-                        clonedBoard[l][k] = clonedBoard[l][k - 1];
+                        //clonedBoard[l][k] = clonedBoard[l][k - 1];
                         Color temp = this.playingField[l][k - 1].getFillColor();
                         this.playingField[l][k].setFillColor(temp);
                     }
@@ -230,7 +226,7 @@ public class TetrisBoard implements KeyListener
                 // Clear the topmost row
                 for (int l = 0; l < WIDTH; l++)
                 {
-                    clonedBoard[l][0] = 0;
+                    //clonedBoard[l][0] = 0;
                     this.playingField[l][0].setFillColor(Color.WHITE);
                 }
                 score += 100;

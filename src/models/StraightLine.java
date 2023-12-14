@@ -6,8 +6,8 @@ import java.awt.*;
  * SquareTet.java:
  * Creates a straight line tetronimo
  *
- * @author Professor Rossi
- * @version 1.0 July 24, 2020
+ * @author Charles Doebler
+ * @version 1.0 December 15, 2023
  *
  * @see java.awt.Point
  */

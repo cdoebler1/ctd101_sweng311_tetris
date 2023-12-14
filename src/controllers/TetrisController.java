@@ -45,23 +45,13 @@ public class TetrisController
         Random random = new Random();
         int selectTetromino = random.nextInt(5);
 
-        switch (selectTetromino) {
-            case 0:
-                tetromino = new StraightLine(Color.cyan);
-                break;
-            case 1:
-                tetromino = new LTet(Color.orange);
-                break;
-            case 2:
-                tetromino = new Square(Color.yellow);
-                break;
-            case 3:
-                tetromino = new Skew(Color.green);
-                break;
-            default:
-                tetromino = new TTet(Color.magenta);
-                break;
-        }
+        tetromino = switch (selectTetromino) {
+            case 0 -> new StraightLine(Color.cyan);
+            case 1 -> new LTet(Color.orange);
+            case 2 -> new Square(Color.yellow);
+            case 3 -> new Skew(Color.green);
+            default -> new TTet(Color.magenta);
+        };
 
         tetromino.setLocation(40 + (5 * Tetromino.SIZE), 0);
 
@@ -90,7 +80,7 @@ public class TetrisController
             }
 
             // Check if the Tetromino collides with other landed Tetrominos
-            if (TETRIS_BOARD.getClonedBoard()[x][y + 1] == 1)
+            if (TETRIS_BOARD.getPlayingField()[x][y + 1].getFillColor() != Color.WHITE)
             {
                 return true;
             }

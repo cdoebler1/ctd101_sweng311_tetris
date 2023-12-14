@@ -202,6 +202,7 @@ public class TetrisBoard implements KeyListener
      */
     private void clearRows()
     {
+        int rowsCleared = 0;
         for (int i = HEIGHT - 1; i > 0; i--)
         {
             boolean rowFilled = false;
@@ -216,20 +217,27 @@ public class TetrisBoard implements KeyListener
             }
             if (rowFilled) {
                 // Shift every row above down by one.
+                rowsCleared ++;
                 for (int k = i; k > 0; k--)
                 {
-                    for (int l = 0; l < WIDTH; l++) {
+                    for (int l = 0; l < WIDTH; l++)
+                    {
                         clonedBoard[l][k] = clonedBoard[l][k - 1];
                         Color temp = this.playingField[l][k - 1].getFillColor();
                         this.playingField[l][k].setFillColor(temp);
                     }
                 }
                 // Clear the topmost row
-                for (int l = 0; l < WIDTH; l++) {
+                for (int l = 0; l < WIDTH; l++)
+                {
                     clonedBoard[l][0] = 0;
                     this.playingField[l][0].setFillColor(Color.WHITE);
                 }
                 score += 100;
+                if (rowsCleared == 4)
+                {
+                    score += 400;
+                }
                 scoreboard.setText("Score: " + score);
                 i++; // Rerun the same row after shifting all rows above
             }

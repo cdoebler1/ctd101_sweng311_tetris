@@ -33,8 +33,8 @@ public abstract class Tetromino extends ShapeGroup
     protected int curRotation = 1;
 
     /**
-     * Generates the four rectangles for the tetronimo and puts them on the screen, they are at the default coordinates
-     * to start
+     * Generates the four rectangles for the tetronimo and puts them on the screen,
+     * they are at the default coordinates to start
      */
     public Tetromino(Color color)
     {
@@ -68,9 +68,13 @@ public abstract class Tetromino extends ShapeGroup
     }
 
     /**
-     * Increments the rotation of the tetronimo, other classes need to override this to provide the full functionality
+     * Increments the rotation of the tetronimo, other classes need to override
+     * this to provide the full functionality
      */
-    public void rotate() { this.curRotation++; }
+    public void rotate()
+    {
+        this.curRotation++;
+    }
 
     /**
      * Shifts the tetronimo left one row
@@ -86,6 +90,14 @@ public abstract class Tetromino extends ShapeGroup
     public void shiftRight()
     {
         super.setLocation( super.getXLocation() + Tetromino.SIZE, super.getYLocation() );
+    }
+
+    /**
+     * Shifts the tetronimo down one row
+     */
+    public void shiftDown()
+    {
+        super.setLocation( super.getXLocation(), super.getYLocation() + Tetromino.SIZE);
     }
 
     public List<Rectangle> getRectangles() {

@@ -19,7 +19,8 @@ import wheelsunh.users.Rectangle;
  * @author Charles Doebler
  * @version 1.0 December 15, 2023
  */
-public class TetrisController {
+public class TetrisController
+{
     private final TetrisBoard TETRIS_BOARD;
 
     /**
@@ -27,7 +28,8 @@ public class TetrisController {
      *
      * @param tetrisBoard A tetris board instance
      */
-    public TetrisController(TetrisBoard tetrisBoard) {
+    public TetrisController(TetrisBoard tetrisBoard)
+    {
         this.TETRIS_BOARD = tetrisBoard;
     }
 
@@ -36,7 +38,8 @@ public class TetrisController {
      *
      * @return The next tetronimo to be played
      */
-    public Tetromino getNextTetronimo() {
+    public Tetromino getNextTetronimo()
+    {
         Tetromino tetromino;
 
         Random random = new Random();
@@ -72,19 +75,23 @@ public class TetrisController {
      * @return True if the tetronimo has landed on the bottom of the board or another tetronimo.
      */
 
-    public boolean collisionDetected(Tetromino tetromino) {
+    public boolean collisionDetected(Tetromino tetromino)
+    {
 
-        for (Rectangle rect : tetromino.getRectangles()) {
+        for (Rectangle rect : tetromino.getRectangles())
+        {
 
             int x = ((rect.getXLocation() - 40) / Tetromino.SIZE);
             int y = (rect.getYLocation() / Tetromino.SIZE);
 
-            if (y >= TetrisBoard.HEIGHT - 1) {
+            if (y >= TetrisBoard.HEIGHT - 1)
+            {
                 return true;
             }
 
             // Check if the Tetromino collides with other landed Tetrominos
-            if (TETRIS_BOARD.getClonedBoard()[x][y + 1] == 1) {
+            if (TETRIS_BOARD.getClonedBoard()[x][y + 1] == 1)
+            {
                 return true;
             }
         }
